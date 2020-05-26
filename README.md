@@ -1,7 +1,9 @@
-# xtests
-Minimalist boilerplate C++ for X-Plane 11.50 plugins without an IDE\
-Links against XPLM 302 SDK and OpenGL32 APIs\
-Written by Chaidhat Chaimongkol in May 2020
+# Aircraft Simulation Engine
+Platform: X-Plane 11.50\
+Dependencies: XPLM 302 SDK and OpenGL32, GLEW32 APIs\
+Start Date: 26-05-2020
+
+### This is a private repository. Source code is protected.
 
 ### Usage Instructions
 Instructions for Windows.\
