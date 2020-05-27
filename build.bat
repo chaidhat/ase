@@ -1,5 +1,10 @@
 @ECHO OFF
+@TITLE ASE BUILD
 "C:\Program Files (x86)\GnuWin32\bin\make.exe"
+
+REM ECHO Cleaning...
+REM REM destroys all .o object files recursively (/S) and silently (/Q)
+REM del /S /Q *.o
 
 ECHO Installing...
 REM add your plugin directories here for auto install
