@@ -1,4 +1,5 @@
 # Aircraft Simulation Engine
+### This is a private repository. Source code is protected.
 Platform: X-Plane 11.50\
 Dependencies: XPLM 302 SDK, OpenGL32, GLEW32\
 Start Date: 26-05-2020\
@@ -26,7 +27,18 @@ Theses are already come with the Github clone. If they are out of date or errors
 Please find the latest X-Plane SDK [here](https://developer.x-plane.com/sdk/plugin-sdk-downloads/) and replace everything in`include/SDK`.\
 Please find the latest GLEW [here](http://glew.sourceforge.net/install.html) and manually replace everything in `include/GLEW`. Install the `.exe` to `%systemroot%\system32` folder too.
 
-### This is a private repository. Source code is protected.
+### Build
+1. build.bat invokes GNU make.
+2. Makefile gives a recipe for how to build.
+3. All .cpp are compiled their respective headers .hpp and include/%/CHeaders
+4. All .cpp are compiled and linked with their respective .hpp to .o
+5. .o is linked with include/%/libraries to create an .dll (.xpl) in bin(aries) directory
+
+plugin is linked to `ase.hpp`\
+`ase.hpp` links to everything in `src/ase/ase`\
+`asepch.hpp` contains all of XPLM and GLEW headers.
+
+### File structure
 as of commit 3
 ```
 TOP
@@ -56,11 +68,35 @@ TOP
     │   └───ase
     │       └───core                main functionalities
     │               entryPoint.hpp  initialises the plugin with SDK
-    │               graphics.hpp    OpenGL GLEW implementation
+    │               graphics.cpp    manages graphics and drawing with GLEW
+    │               graphics.hpp    
     │               letters.h       
-    │               plugin.cpp      Plugin-engine interaction
+    │               plugin.cpp      manages standard plugin behaviour
     │               plugin.hpp
     │
     └───plugin              plugin-side code
             sample-plugin.cpp       sample plugin for initialisation
 ```
+
+### Code convention
+```
+1. 4 spaces to a tab.
+2. Allman brace placement, empty line between declarations
+3. SNAKE_CASE for preprocessor statements
+4. PascalCase for namespace, classes and functions
+5. camelCase for variables
+6. Naming convention (Hungarian type-specification)-
+    g_  member of a global namespace, integer (e.g. m_path)
+    m_  member of a structure/class, integer
+    s_  static member of a structure/class
+    c_  constansts
+    f   booleans (e.g. bool m_fBegin)
+    p   pointers or references (e.g. int* m_pRef)
+    ...Interface interface (pure abstract) classes (e.g. class PluginInterface {};)
+    ...Abstract abstract classes
+    ...Manager static manager namespaces
+7. Classes and vars should be nouns, functions should be verbs, keywords are adjectives.
+8. For engine code, avoid 'using namespace' for clarity
+9. Pointers and references should be put next to the type. (e.g. int* m_foo, NOT int *m_foo)
+```
+

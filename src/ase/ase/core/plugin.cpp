@@ -3,43 +3,44 @@
 
 namespace ase
 {
-    PluginBehaviour::PluginBehaviour(std::string name, std::string sig, std::string desc) : name(name), sig(sig),
-    desc(desc)
+    PluginInterface::PluginInterface(std::string name, std::string sig, std::string desc) : 
+        m_name(name), m_sig(sig), m_desc(desc)
     {
     }
-    PluginBehaviour::~PluginBehaviour()
-    {
-    }
-
-    void PluginBehaviour::Start()
+    PluginInterface::~PluginInterface()
     {
     }
 
-    void PluginBehaviour::Stop()
+    void PluginInterface::Start()
+    {
+        // undefined start, throw an error
+    }
+
+    void PluginInterface::Stop()
     {
     }
 
-    void PluginBehaviour::Update()
+    void PluginInterface::Update()
     {
     }
 
-    void PluginBehaviour::Enable()
+    void PluginInterface::Enable()
     {
     }
 
-    void PluginBehaviour::Disable()
+    void PluginInterface::Disable()
     {
     }
 
     namespace PluginManager
     {
-        void DeregisterPlugin(PluginBehaviour* plugin)
+        void DeregisterPlugin(PluginInterface* pPlugin)
         {
             XPLMDisablePlugin(XPLMGetMyID());
         }
 
         // defined by CLIENT
-        PluginBehaviour* RegisterPlugin();
+        PluginInterface* RegisterPlugin();
     }
 }
 

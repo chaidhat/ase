@@ -11,11 +11,23 @@
 
 #define ASE_VERSION "2.0"
 
+// For use by ase plugin/application/client
+
 // manages standard plugin behaviour
 #include "ase/core/plugin.hpp"
-
 // manages graphics and drawing with GLEW
 #include "ase/core/graphics.hpp"
+// manages input and output
+#include "ase/core/io.hpp"
+// manages data in and out of X-Plane
+#include "ase/core/data.hpp"
+
+// manages debug logging
+#include "ase/debug/log.hpp"
+// manages debug timings and memory usage
+//#include "ase/debug/profile.hpp"
+
+
 
 
 

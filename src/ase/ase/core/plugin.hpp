@@ -1,15 +1,17 @@
+#pragma once
+
 namespace ase
 {
     // plugin interface
-    class PluginBehaviour
+    class PluginInterface
     {
     public:
-        PluginBehaviour(std::string name, std::string sig, std::string desc);
-        virtual ~PluginBehaviour();
+        PluginInterface(std::string name, std::string sig, std::string desc);
+        virtual ~PluginInterface();
 
-        std::string name;
-        std::string sig;
-        std::string desc;
+        std::string m_name;
+        std::string m_sig;
+        std::string m_desc;
 
         virtual void Start();
         virtual void Stop();
@@ -21,9 +23,9 @@ namespace ase
 
     namespace PluginManager
     {
-        void DeregisterPlugin(PluginBehaviour* plugin);
+        void DeregisterPlugin(PluginInterface* pPlugin);
 
         // defined by CLIENT
-        PluginBehaviour* RegisterPlugin();
+        PluginInterface* RegisterPlugin();
     }
 }

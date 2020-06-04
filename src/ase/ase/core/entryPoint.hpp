@@ -1,5 +1,8 @@
+#pragma once
 
-static ase::PluginBehaviour* plugin;
+#include <asepch.hpp>
+
+static ase::PluginInterface* plugin;
 
 using namespace std;
 
@@ -21,12 +24,11 @@ PLUGIN_API int XPluginStart(
 						char *		outSig,
 						char *		outDesc)
 {
-    caton()
     plugin = ase::PluginManager::RegisterPlugin();
 
-	strcpy(outName, plugin->name.c_str());
-	strcpy(outSig, plugin->sig.c_str());
-	strcpy(outDesc, plugin->desc.c_str());
+	strcpy(outName, plugin->m_name.c_str());
+	strcpy(outSig, plugin->m_sig.c_str());
+	strcpy(outDesc, plugin->m_desc.c_str());
 
     plugin->Start();
 
