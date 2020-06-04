@@ -13,6 +13,7 @@ static float handleFlCallback (
                                    void *               inRefcon)
 {
 
+    ase::EventManager::UpdateEvents();
     plugin->Update();
 
     /* Return 0.01 to indicate that we want to be called again in 1 ms. */
@@ -30,6 +31,7 @@ PLUGIN_API int XPluginStart(
 	strcpy(outSig, plugin->m_sig.c_str());
 	strcpy(outDesc, plugin->m_desc.c_str());
 
+    ase::EventManager::StartEvents();
     plugin->Start();
 
     XPLMRegisterFlightLoopCallback(		

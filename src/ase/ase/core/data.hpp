@@ -138,12 +138,15 @@ namespace ase
         template <typename T>
         void DeregisterDataRef(const T&& pInpDataRef)
         {
+            // TODO: consider using std::iterator()
             for (DataInterface* pData : m_data)
             {
                 DataRef<int>* pDataRef = (DataRef<int>*)pData;
                 // is the memory location of the output reference equal to the input memory location of the reference?
                 if (&pDataRef->GetData() == pInpDataRef)
+                {
                     free(pDataRef); // implicitly calls destructor of ase::DataRef
+                }
             }
         }
         void DeregisterDataRef(const std::string dataRef);

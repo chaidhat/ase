@@ -15,13 +15,11 @@ namespace ase
     namespace EventManager
     {
         static std::list<DataInterface*> m_events;
-        void RegisterEvent(EventInterface* pEvent)
-        {
-            m_events.push_back(pEvent);
-        }
 
-        void DeregisterEvent(EventInterface* pEvent)
-        {
-        }
+        void RegisterEvent(EventInterface* pEvent);
+        void DeregisterEvent(EventInterface* pInpEvent);
+
+        void StartEvents();
+        void UpdateEvents();
     }
 }

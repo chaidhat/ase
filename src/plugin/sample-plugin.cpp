@@ -42,7 +42,7 @@ public:
 
 private:
     // register all flightdata
-    int& m_pDataRef = ase::DataManager::LinkDataRef<int>("777/path/dataRef");
+    int& m_pDataRef = ase::DataManager::RegisterDataRef<int>("777/path/dataRef");
 
     // demonstration of input/output
     void DemoIo()
@@ -59,7 +59,7 @@ private:
         // get parts of filedir
         std::string myPath = myFile.GetPath(); // returns path1
 
-        // get parts of the filedir (bool fPath, bool fName, bool fExt)
+        // get parts of the filedir (bool fPath, bool fName, bool fE      xt)
         std::string myFilename = myFile.GetDir(false, true, true); // newfile.txt
 
         // read a line from file

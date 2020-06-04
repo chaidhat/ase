@@ -3,38 +3,35 @@
 
 namespace ase
 {
-    namespace DataManager
+    namespace EventManager
     {
-    }
+        void RegisterEvent(EventInterface* pEvent)
+        {
+            m_events.push_back(pEvent);
+        }
 
-    template<>
-    bool DataRef<int>::CheckTypeXpDataRef(XPLMDataTypeID dataRefType)
-    {
-        if (dataRefType != xplmType_Int)
-            return false;
-        return true;
-    }
+        void DeregisterEvent(EventInterface* pInpEvent)
+        {
+            // consider using std::iterators
+            for (EventInterface* pEvent : m_events)
+            {
+                if (pEvent == pInpEvent)
+                    m_events.remove(pEvent);
+            }
+        }
 
-    template<>
-    void DataRef<int>::RegisterXpDataRef()
-    {
-         m_dataref = XPLMRegisterDataAccessor(m_datapath.c_str(),
-             xplmType_Int,                                  // The types we support
-             1,                                             // Writable
-             GetXpDataRef<int>, SetXpDataRef<int>,              // Integer accessors
-             NULL, NULL,                                    // Float accessors
-             NULL, NULL,                                    // Doubles accessors
-             NULL, NULL,                                    // Int array accessors
-             NULL, NULL,                                    // Float array accessors
-             NULL, NULL,                                    // Raw data accessors
-             &m_pData, &m_pData 
-             );      
-    }
+        void StartEvents()
+        {
+            // consider using std::iterators
+            for (EventInterface* pEvent : m_events)
+                pEvent->Start();
+        }
 
-    template<>
-    void DataRef<int>::AccessXpDataRef()
-    {
-         //m_dataref
+        void UpdateEvents()
+        {
+            // consider using std::iterators
+            for (EventInterface* pEvent : m_events)
+                pEvent->Update();
+        }
     }
-
 }
