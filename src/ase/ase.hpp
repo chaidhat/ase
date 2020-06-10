@@ -15,12 +15,14 @@
 
 // manages standard plugin behaviour
 #include "ase/core/plugin.hpp"
-// manages graphics and drawing with GLEW
-#include "ase/core/graphics.hpp"
+// manages events behaviour
+#include "ase/core/event.hpp"
 // manages input and output
 #include "ase/core/io.hpp"
 // manages data in and out of X-Plane
 #include "ase/core/data.hpp"
+// manages graphics and drawing with GLEW
+#include "ase/core/graphics.hpp"
 
 // manages debug logging
 #include "ase/debug/log.hpp"

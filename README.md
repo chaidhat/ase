@@ -8,7 +8,7 @@ Start Date: 26-05-2020\
 Dunman\
 Chaidhat Chaimongkol
 
-
+![](https://github.com/Chai112/ase/blob/master/ASE-flow-1.png)
 
 ### Usage Instructions
 Instructions for Windows.\
@@ -27,7 +27,7 @@ Theses are already come with the Github clone. If they are out of date or errors
 Please find the latest X-Plane SDK [here](https://developer.x-plane.com/sdk/plugin-sdk-downloads/) and replace everything in`include/SDK`.\
 Please find the latest GLEW [here](http://glew.sourceforge.net/install.html) and manually replace everything in `include/GLEW`. Install the `.exe` to `%systemroot%\system32` folder too.
 
-### Build
+### Build Process
 1. build.bat invokes GNU make.
 2. Makefile gives a recipe for how to build.
 3. All .cpp are compiled their respective headers .hpp and include/%/CHeaders

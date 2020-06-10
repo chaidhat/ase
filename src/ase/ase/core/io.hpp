@@ -4,6 +4,14 @@
 
 namespace ase
 {
+    class IoException : public std::runtime_error 
+    {
+    public:
+        IoException(const std::string& msg):
+            runtime_error(msg)
+        {}
+    };
+
     class File
     {
     public:

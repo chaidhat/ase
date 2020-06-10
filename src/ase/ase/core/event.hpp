@@ -1,6 +1,6 @@
 #pragma once
 
-#include <asepch.hpp>
+#include "ase/debug/log.hpp"
 
 namespace ase
 {
@@ -14,7 +14,7 @@ namespace ase
 
     namespace EventManager
     {
-        static std::list<DataInterface*> m_events;
+        static std::list<EventInterface*> m_events;
 
         void RegisterEvent(EventInterface* pEvent);
         void DeregisterEvent(EventInterface* pInpEvent);

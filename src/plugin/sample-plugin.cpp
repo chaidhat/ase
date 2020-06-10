@@ -20,7 +20,7 @@ public:
 
     void Start()
     {
-        ase::Debug::Log("Hello World!");
+        ase::Debug::Log("Hello World! 2");
         DemoIo();
 
     }
@@ -33,16 +33,16 @@ public:
 
     void Update()
     {
-        m_pDataRef = 2; // set eng n1 to 2
+        m_pDataRef = 20;
         int engN2 = m_pDataRef + 2;
-
-        //m_pDataRef = &engN2; // not allowed! m_pEngN1 looses its address
         ase::Debug::Log(m_pDataRef);
+        ase::Debug::Log(m_pDataRefSim);
     }
 
 private:
     // register all flightdata
     int& m_pDataRef = ase::DataManager::RegisterDataRef<int>("777/path/dataRef");
+    int& m_pDataRefSim = ase::DataManager::RegisterDataRef<int>("sim/aircraft/engine/acf_num_engines");
 
     // demonstration of input/output
     void DemoIo()

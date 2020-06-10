@@ -3,10 +3,6 @@
 
 namespace ase
 {
-    namespace DataManager
-    {
-    }
-
     template<>
     bool DataRef<int>::CheckTypeXpDataRef(XPLMDataTypeID dataRefType)
     {
@@ -18,23 +14,31 @@ namespace ase
     template<>
     void DataRef<int>::RegisterXpDataRef()
     {
-         m_dataref = XPLMRegisterDataAccessor(m_datapath.c_str(),
+         m_dataRef = XPLMRegisterDataAccessor(m_dataPath.c_str(),
              xplmType_Int,                                  // The types we support
              1,                                             // Writable
-             GetXpDataRef<int>, SetXpDataRef<int>,              // Integer accessors
+             GetXpDataRefRefCon<int>, SetXpDataRefRefCon<int>,              // Integer accessors
              NULL, NULL,                                    // Float accessors
              NULL, NULL,                                    // Doubles accessors
              NULL, NULL,                                    // Int array accessors
              NULL, NULL,                                    // Float array accessors
              NULL, NULL,                                    // Raw data accessors
-             &m_pData, &m_pData 
+             &m_pData, &m_pData                             // RefCons
              );      
     }
 
     template<>
-    void DataRef<int>::AccessXpDataRef()
+    void DataRef<int>::GetXpDataRef()
     {
-         //m_dataref
+        ase::Debug::Log("Getting dataref " + m_dataPath);
+        *m_pData = XPLMGetDatai(m_dataRef);
+        m_memData = *m_pData;
+    }
+
+    template<>
+    void DataRef<int>::SetXpDataRef()
+    {
+        XPLMSetDatai(m_dataRef, *m_pData);
     }
 
 }

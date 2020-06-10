@@ -1,5 +1,5 @@
 #include "asepch.hpp"
-#include "ase/core/data.hpp"
+#include "ase/core/event.hpp"
 
 namespace ase
 {
@@ -7,6 +7,7 @@ namespace ase
     {
         void RegisterEvent(EventInterface* pEvent)
         {
+            ase::Debug::Log("Registering event");
             m_events.push_back(pEvent);
         }
 

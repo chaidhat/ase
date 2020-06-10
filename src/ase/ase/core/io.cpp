@@ -20,6 +20,8 @@ namespace ase
         std::string outputStr = "";
         if (fPath)
             outputStr.append(m_path);
+        if (fPath && fName)
+            outputStr.append("/");
         if (fName)
             outputStr.append(m_name);
         if (fExt)

@@ -6,12 +6,23 @@ static ase::PluginInterface* plugin;
 
 using namespace std;
 
+//static char flightLoopIterator = 0;
+
 static float handleFlCallback (
                                    float                inElapsedSinceLastCall,    
                                    float                inElapsedTimeSinceLastFlightLoop,    
                                    int                  inCounter,    
                                    void *               inRefcon)
 {
+
+    /*
+    flightLoopIterator++;
+    if (flightLoopIterator == 10) // every 10ms (0.1 second)
+    {
+        flightLoopIterator = 0;
+        ase::EventManager::UpdateEvents();
+    }
+    */
 
     ase::EventManager::UpdateEvents();
     plugin->Update();
@@ -25,13 +36,16 @@ PLUGIN_API int XPluginStart(
 						char *		outSig,
 						char *		outDesc)
 {
+    ase::Debug::Log("Initialising ASE runtime");
     plugin = ase::PluginManager::RegisterPlugin();
 
 	strcpy(outName, plugin->m_name.c_str());
 	strcpy(outSig, plugin->m_sig.c_str());
 	strcpy(outDesc, plugin->m_desc.c_str());
 
+    ase::Debug::Log("Starting events");
     ase::EventManager::StartEvents();
+    ase::Debug::Log("Starting plugin " + plugin->m_sig + " runtime");
     plugin->Start();
 
     XPLMRegisterFlightLoopCallback(		

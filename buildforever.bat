@@ -16,6 +16,9 @@ set /a "x = 0"
     ECHO Installing...
     REM add your plugin directories here for auto install
 
+    DEL /Q "D:\Documents\programs\X-Plane 11\Aircraft\Chai112\b777-300er\plugins\test"
+    DEL /Q "D:\Documents\programs\X-Plane 11\Aircraft\Chai112\xtest1\plugins\test"
+    DEL /Q "D:\Documents\programs\X-Plane 11\Aircraft\Chai112\xtest2\plugins\test"
     COPY bin\win.xpl "D:\Documents\programs\X-Plane 11\Aircraft\Chai112\b777-300er\plugins\test"
     COPY bin\win.xpl "D:\Documents\programs\X-Plane 11\Aircraft\Chai112\xtest1\plugins\test"
     COPY bin\win.xpl "D:\Documents\programs\X-Plane 11\Aircraft\Chai112\xtest2\plugins\test"
