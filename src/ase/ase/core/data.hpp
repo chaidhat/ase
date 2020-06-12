@@ -6,11 +6,18 @@
 
 namespace ase
 {
-    enum DataModeRead
+    enum DataReadMode
     {
-        READ_ONLY, // do not get the data
-        READ_LAZY, // every 1 second
-        READ_NORMAL, // every 0.01 second
+        RM_NORMAL, // do get and set
+        RM_GET_ONLY, // do not set the data
+        RM_SET_ONLY, // do not get the data
+        RM_INIT_ONLY, // get it only once on init
+    };
+
+    enum DataReadSpeed
+    {
+        RS_NORMAL, // every 0.01 second
+        RS_LAZY, // every 0.1 second
     };
 
     class DataException : public std::runtime_error 
@@ -51,6 +58,7 @@ namespace ase
     public:
         virtual void Start() = 0;
         virtual void Update() = 0;
+        virtual void LazyUpdate() = 0;
     };
 
     template <class T>
@@ -59,8 +67,8 @@ namespace ase
     public:
         // TODO: try a bit of copy assignment operators for simplicity.
         //
-        DataRef(const std::string dataPath, T* pData) :
-            m_dataPath(dataPath), m_pData(pData)
+        DataRef(const std::string dataPath, T* pData, DataReadMode readMode, DataReadSpeed readSpeed) :
+            m_dataPath(dataPath), m_pData(pData), m_readMode(readMode), m_readSpeed(readSpeed)
         {
         }
 
@@ -71,6 +79,7 @@ namespace ase
 
         void Start()
         {
+            ase::Debug::Log("Creating Dataref " + m_dataPath);
             m_dataRef = XPLMFindDataRef(m_dataPath.c_str());
 
             // check existence of dataref
@@ -107,23 +116,14 @@ namespace ase
 
         void Update()
         {
-            ase::Debug::Log("Updating " + m_dataPath);
-            // registered dataRefs already have a refCon to set it
-            if (m_fIsRegistered)
-            {
-                // is the data changed by plugin?
-                if (m_memData != *m_pData)
-                {
-                    // can the data be written to?
-                    if (m_fCanWrite)
-                        SetXpDataRef();
-                    else
-                        throw WriteException("Data " + m_dataPath + " cannot be written to!");
-                    m_memData = *m_pData;
-                }
-                else
-                    GetXpDataRef();
-            }
+            if (m_readSpeed == RS_NORMAL)
+                UpdateDataref();
+        }
+
+        void LazyUpdate()
+        {
+            if (m_readSpeed == RS_LAZY)
+                UpdateDataref();
         }
 
         T& GetRef()
@@ -134,13 +134,43 @@ namespace ase
 
 
         XPLMDataRef m_dataRef;
-        DataModeRead dmr;
+        DataReadMode m_readMode;
+        DataReadSpeed m_readSpeed;
         const std::string m_dataPath;
     private:
         T* m_pData;
         T m_memData; // check for any changes in data
         bool m_fCanWrite;
         bool m_fIsRegistered;
+
+        void UpdateDataref()
+        {
+            ase::Debug::Log("Updating " + m_dataPath);
+
+            // registered dataRefs already have a refCon to set it
+            if (m_fIsRegistered)
+            {
+                    // is the data changed by plugin?
+                    if (m_memData != *m_pData)
+                    {
+                        if (m_readMode == RM_NORMAL || m_readMode == RM_SET_ONLY)
+                        {
+                            // can the data be written to?
+                            if (m_fCanWrite)
+                                SetXpDataRef();
+                            else
+                                throw WriteException("Data " + m_dataPath + " cannot be written to!");
+                            m_memData = *m_pData;
+                        }
+                    }
+                    else
+                    {
+                        if (m_readMode == RM_NORMAL || m_readMode == RM_GET_ONLY)
+                            GetXpDataRef();
+                    }
+            }
+        }
+
         bool CheckTypeXpDataRef(XPLMDataTypeID dataRefType);
         void RegisterXpDataRef();
 
@@ -153,23 +183,41 @@ namespace ase
         static std::list<DataInterface*> m_data;
 
         template <typename T>
-        T& RegisterDataRef(const std::string dataRef, const DataModeRead dmr = READ_NORMAL)
+        T& RegisterDataRef(const std::string dataRef, const DataReadMode readMode, const DataReadSpeed readSpeed)
         {
             ase::Debug::Log("Registering dataref " + dataRef);
-            // check for duplicate registers
+            // check for duplicate registerations
             for (DataInterface* pData : m_data)
             {
                 DataRef<int>* pDataRef = (DataRef<int>*)pData;
-                if (pDataRef->m_datapath == dataRef)
-                    return pDataRef->GetData();
+                if (pDataRef->m_dataPath == dataRef)
+                    return pDataRef->GetRef(); // return existing duplicate registerations
             }
             // none found, creating new dataRef
             T* pDataLocation = new T;
-            DataRef<T>* pDataRef = new DataRef<T>(dataRef, pDataLocation);
-            //m_data.push_back((DataInterface*)pDataRef);
+            DataRef<T>* pDataRef = new DataRef<T>(dataRef, pDataLocation, readMode, readSpeed);
+            m_data.push_back((DataInterface*)pDataRef);
             EventManager::RegisterEvent((EventInterface*)pDataRef);
 
             return pDataRef->GetRef();
+        }
+
+        template <typename T>
+        T& RegisterDataRef(const std::string dataRef)
+        {
+            return RegisterDataRef<T>(dataRef, RM_NORMAL, RS_NORMAL);
+        }
+
+        template <typename T>
+        T& RegisterDataRef(const std::string dataRef, const DataReadSpeed readSpeed)
+        {
+            return RegisterDataRef<T>(dataRef, RM_NORMAL, readSpeed);
+        }
+
+        template <typename T>
+        T& RegisterDataRef(const std::string dataRef, const DataReadMode readMode)
+        {
+            return RegisterDataRef<T>(dataRef, readMode, RS_NORMAL);
         }
 
         template <typename T>

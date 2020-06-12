@@ -8,31 +8,41 @@ namespace ase
         void RegisterEvent(EventInterface* pEvent)
         {
             ase::Debug::Log("Registering event");
-            m_events.push_back(pEvent);
+            s_events.push_back(pEvent);
         }
 
         void DeregisterEvent(EventInterface* pInpEvent)
         {
             // consider using std::iterators
-            for (EventInterface* pEvent : m_events)
+            for (EventInterface* pEvent : s_events)
             {
                 if (pEvent == pInpEvent)
-                    m_events.remove(pEvent);
+                    s_events.remove(pEvent);
             }
         }
 
         void StartEvents()
         {
             // consider using std::iterators
-            for (EventInterface* pEvent : m_events)
+            for (EventInterface* pEvent : s_events)
                 pEvent->Start();
         }
 
         void UpdateEvents()
         {
             // consider using std::iterators
-            for (EventInterface* pEvent : m_events)
+            for (EventInterface* pEvent : s_events)
+            {
                 pEvent->Update();
+
+                // every 1s
+                s_updateItr++;
+                if (s_updateItr == 100)
+                {
+                    pEvent->LazyUpdate();
+                    s_updateItr = 0;
+                }
+            }
         }
     }
 }

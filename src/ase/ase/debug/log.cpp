@@ -5,10 +5,6 @@ namespace ase
 {
     namespace Debug
     {
-        void InitLog()
-        {
-        }
-
         void Log(std::string message)
         {
             XPLMDebugString((message + "\n").c_str());
@@ -17,6 +13,10 @@ namespace ase
         void Log(int message)
         {
             Log(std::to_string(message));
+        }
+
+        void InitLog()
+        {
         }
     }
 }

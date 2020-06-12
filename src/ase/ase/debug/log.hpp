@@ -1,4 +1,5 @@
 #pragma once
+#include "asepch.hpp"
 
 #include "ase/core/io.hpp"
 

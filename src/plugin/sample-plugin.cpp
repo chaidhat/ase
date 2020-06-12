@@ -20,7 +20,7 @@ public:
 
     void Start()
     {
-        ase::Debug::Log("Hello World! 2");
+        ase::Debug::Log("Hello World!");
         DemoIo();
 
     }
@@ -42,7 +42,18 @@ public:
 private:
     // register all flightdata
     int& m_pDataRef = ase::DataManager::RegisterDataRef<int>("777/path/dataRef");
-    int& m_pDataRefSim = ase::DataManager::RegisterDataRef<int>("sim/aircraft/engine/acf_num_engines");
+    //
+    // register all lazy flightdata (get/set once per second)
+    int& m_pDataRefB = ase::DataManager::RegisterDataRef<int>("777/path/dataRef", ase::RS_LAZY);
+
+    // read only, saves some performance
+    const int& m_pDataRefSim = ase::DataManager::RegisterDataRef<int>("sim/aircraft/engine/acf_num_engines", ase::RM_GET_ONLY);
+
+    // write only, saves lots of performance
+    int& m_pDataRefSimB = ase::DataManager::RegisterDataRef<int>("sim/aircraft/engine/acf_num_engines", ase::RM_SET_ONLY);
+
+    // only get the data once at init (no set), saves lots of performance
+    int& m_pDataRefSimC = ase::DataManager::RegisterDataRef<int>("sim/aircraft/engine/acf_num_engines", ase::RM_INIT_ONLY);
 
     // demonstration of input/output
     void DemoIo()

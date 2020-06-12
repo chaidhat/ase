@@ -39,7 +39,7 @@ plugin is linked to `ase.hpp`\
 `asepch.hpp` contains all of XPLM and GLEW headers.
 
 ### File structure
-as of commit 3
+as of commit 8
 ```
 TOP
 │   .gitignore              for git
@@ -66,13 +66,23 @@ TOP
     │   │   asepch.hpp              pre-compiled header
     │   │
     │   └───ase
-    │       └───core                main functionalities
-    │               entryPoint.hpp  initialises the plugin with SDK
-    │               graphics.cpp    manages graphics and drawing with GLEW
-    │               graphics.hpp    
-    │               letters.h       
-    │               plugin.cpp      manages standard plugin behaviour
-    │               plugin.hpp
+    │       ├───core        main functionalities
+    │       │       entryPoint.hpp  initialises the plugin with SDK
+    │       │       data.cpp        manages data IO of X-Plane
+    │       │       data.hpp        
+    │       │       event.cpp       manages plugin events behaviour
+    │       │       event.hpp        
+    │       │       io.cpp          manages IO of the engine
+    │       │       io.hpp        
+    │       │       plugin.cpp      manages standard plugin behaviour
+    │       │       plugin.hpp
+    │       │
+    │       ├───debug       debugging and reporting
+    │       │       log.cpp         manages debug logging
+    │       │       log.hpp    
+    │       │
+    │       └───graphics    visual graphical interaction
+    │               graphics.hpp    manages graphics and drawing with GLEW
     │
     └───plugin              plugin-side code
             sample-plugin.cpp       sample plugin for initialisation
@@ -81,7 +91,7 @@ TOP
 ### Code convention
 ```
 1. 4 spaces to a tab.
-2. Allman brace placement, empty line between declarations
+2. Allman brace placement, empty line between scope declarations
 3. SNAKE_CASE for preprocessor statements
 4. PascalCase for namespace, classes and functions
 5. camelCase for variables

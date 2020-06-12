@@ -1,5 +1,5 @@
 #include "asepch.hpp"
-#include "ase/core/graphics.hpp"
+#include "ase/graphics/graphics.hpp"
 
 namespace ase
 {
