@@ -11,7 +11,6 @@ public:
         std::string("ase.company.sandbox"),
         std::string("This is a sample plugin for the ASE."))
     {
-        
     }
 
     ~Plugin()
@@ -27,8 +26,9 @@ public:
 
     void Stop()
     {
+        // TODO: This should be automatically dealt with
         // deregister all flightdata
-        ase::DataManager::DeregisterDataRef(&m_pDataRef); 
+        //ase::DataManager::DeregisterDataRef(&m_pDataRef); 
     }
 
     void Update()

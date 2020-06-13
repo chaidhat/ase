@@ -57,6 +57,8 @@ namespace ase
     {
     public:
         virtual void Start() = 0;
+        virtual void Stop() = 0;
+
         virtual void Update() = 0;
         virtual void LazyUpdate() = 0;
     };
@@ -65,7 +67,8 @@ namespace ase
     class DataRef : public DataInterface
     {
     public:
-        // TODO: try a bit of copy assignment operators for simplicity.
+        // TODO: try a copy assignment operators for simplicity.
+        // TODO: Stop() to deregister the data
         //
         DataRef(const std::string dataPath, T* pData, DataReadMode readMode, DataReadSpeed readSpeed) :
             m_dataPath(dataPath), m_pData(pData), m_readMode(readMode), m_readSpeed(readSpeed)
@@ -79,7 +82,7 @@ namespace ase
 
         void Start()
         {
-            ase::Debug::Log("Creating Dataref " + m_dataPath);
+            ase::Debug::Log("Data: Creating Dataref " + m_dataPath);
             m_dataRef = XPLMFindDataRef(m_dataPath.c_str());
 
             // check existence of dataref
@@ -111,7 +114,11 @@ namespace ase
                 *m_pData = 0;
                 m_memData = 0;
             }
-            ase::Debug::Log("Created dataref " + m_dataPath);
+        }
+
+        void Stop()
+        {
+            // destruction is done in destructor
         }
 
         void Update()
@@ -145,8 +152,6 @@ namespace ase
 
         void UpdateDataref()
         {
-            ase::Debug::Log("Updating " + m_dataPath);
-
             // registered dataRefs already have a refCon to set it
             if (m_fIsRegistered)
             {
@@ -185,7 +190,6 @@ namespace ase
         template <typename T>
         T& RegisterDataRef(const std::string dataRef, const DataReadMode readMode, const DataReadSpeed readSpeed)
         {
-            ase::Debug::Log("Registering dataref " + dataRef);
             // check for duplicate registerations
             for (DataInterface* pData : m_data)
             {

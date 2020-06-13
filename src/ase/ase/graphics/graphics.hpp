@@ -1,10 +1,12 @@
 #pragma once
 
-#include <glew.h>
-
 namespace ase
 {
-    namespace Graphics
+    class Graphics
     {
-    }
+    public:
+        static void Init();
+    private:
+        static void InitContext();
+    };
 }

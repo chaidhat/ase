@@ -30,7 +30,6 @@ namespace ase
     template<>
     void DataRef<int>::GetXpDataRef()
     {
-        ase::Debug::Log("Getting dataref " + m_dataPath);
         *m_pData = XPLMGetDatai(m_dataRef);
         m_memData = *m_pData;
     }

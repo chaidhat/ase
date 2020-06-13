@@ -30,19 +30,18 @@ namespace ase
 
         void UpdateEvents()
         {
+            s_updateItr++;
             // consider using std::iterators
             for (EventInterface* pEvent : s_events)
             {
                 pEvent->Update();
-
                 // every 1s
-                s_updateItr++;
                 if (s_updateItr == 100)
-                {
                     pEvent->LazyUpdate();
-                    s_updateItr = 0;
-                }
             }
+            // every 1s
+            if (s_updateItr == 100)
+                s_updateItr = 0;
         }
     }
-}
+    }

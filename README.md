@@ -82,7 +82,8 @@ TOP
     │       │       log.hpp    
     │       │
     │       └───graphics    visual graphical interaction
-    │               graphics.hpp    manages graphics and drawing with GLEW
+    │               graphics.cpp    manages graphics and drawing with GLEW
+    │               graphics.hpp    
     │
     └───plugin              plugin-side code
             sample-plugin.cpp       sample plugin for initialisation
@@ -96,7 +97,7 @@ TOP
 4. PascalCase for namespace, classes and functions
 5. camelCase for variables
 6. Naming convention (Hungarian type-specification)-
-    g_  member of a global namespace, integer (e.g. m_path)
+    g_  member of a global namespace, integer (e.g. g_path)
     m_  member of a structure/class, integer
     s_  static member of a structure/class
     c_  constansts

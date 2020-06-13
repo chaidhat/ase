@@ -43,6 +43,8 @@ PLUGIN_API int XPluginStart(
 	strcpy(outSig, plugin->m_sig.c_str());
 	strcpy(outDesc, plugin->m_desc.c_str());
 
+    ase::Debug::Log("Starting graphics");
+    ase::Graphics::Init();
     ase::Debug::Log("Starting events");
     ase::EventManager::StartEvents();
     ase::Debug::Log("Starting plugin " + plugin->m_sig + " runtime");

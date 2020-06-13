@@ -5,12 +5,13 @@
 
 namespace ase
 {
-    namespace Debug
+    class Debug
     {
-        void InitLog();
+    public:
+        //static void LogInit();
 
-        void Log(std::string message);
-        void Log(int message);
+        static void Log(std::string message);
+        static void Log(int message);
         
         static File* s_logFile;
     };
