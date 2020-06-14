@@ -10,12 +10,12 @@ namespace ase
     {
     }*/
 
-    void Debug::Log(std::string message)
+    void Debug::Log(const std::string message)
     {
         XPLMDebugString((message + "\n").c_str());
     }
 
-    void Debug::Log(int message)
+    void Debug::Log(const int message)
     {
         Log(std::to_string(message));
     }

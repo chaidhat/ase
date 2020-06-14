@@ -8,10 +8,10 @@ namespace ase
     class Debug
     {
     public:
-        //static void LogInit();
+        //static void InitLog();
 
-        static void Log(std::string message);
-        static void Log(int message);
+        static void Log(const std::string message);
+        static void Log(const int message);
         
         static File* s_logFile;
     };

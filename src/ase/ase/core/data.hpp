@@ -68,7 +68,6 @@ namespace ase
     {
     public:
         // TODO: try a copy assignment operators for simplicity.
-        // TODO: Stop() to deregister the data
         //
         DataRef(const std::string dataPath, T* pData, DataReadMode readMode, DataReadSpeed readSpeed) :
             m_dataPath(dataPath), m_pData(pData), m_readMode(readMode), m_readSpeed(readSpeed)
@@ -82,7 +81,7 @@ namespace ase
 
         void Start()
         {
-            ase::Debug::Log("Data: Creating Dataref " + m_dataPath);
+            ase::Debug::Log("Data: Creating dataref " + m_dataPath);
             m_dataRef = XPLMFindDataRef(m_dataPath.c_str());
 
             // check existence of dataref

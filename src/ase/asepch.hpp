@@ -4,10 +4,13 @@
 
 #include <string>
 #include <list>
+#include <array>
 #include <stdexcept>
 
-// bit of a data obscuration, but helpful
+// could be data obscuration, but makes it cleaner
 #include <XPLMPlugin.h>
 #include <XPLMProcessing.h>
 #include <XPLMUtilities.h>
 #include <XPLMDataAccess.h>
+#include <XPLMGraphics.h>
+#include <XPLMDisplay.h>
