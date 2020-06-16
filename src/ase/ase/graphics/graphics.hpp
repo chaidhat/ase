@@ -50,6 +50,7 @@ namespace ase
 
         static Texture* s_texture;
         static XPLMWindowID myWindow;
+        static bool hasToUpdate;
         static unsigned int shaderProgram, VAO, VBO, EBO;
     };
 }

@@ -14,6 +14,7 @@ namespace ase
     unsigned int Graphics::EBO = 0;
 
     Texture* Graphics::s_texture = new Texture();
+    bool Graphics::hasToUpdate = true;
 
     XPLMWindowID Graphics::myWindow = 0;
 
@@ -29,13 +30,6 @@ namespace ase
     void Graphics::Init()
     {
         //TODO: add try/catch statement here too
-        XPLMRegisterDrawCallback(DrawCallbackXp, xplm_Phase_Gauges, 0, NULL);
-        Debug::Log("Graphics: Initialising context");
-        InitContext();
-        Debug::Log("Graphics: Initialising textures");
-        s_texture->Init();
-        Debug::Log("Graphics: Finished initialisation");
-
         textureColor colour;
         colour.red = 255;
         colour.green = 128;
@@ -46,13 +40,20 @@ namespace ase
         for (auto &pixel : s_texture->textureZone){
             pixel=colour;
         }
+
+        XPLMRegisterDrawCallback(DrawCallbackXp, xplm_Phase_Gauges, 0, NULL);
+        Debug::Log("Graphics: Initialising context");
+        InitContext();
+        Debug::Log("Graphics: Initialising textures");
+        s_texture->Init();
+        Debug::Log("Graphics: Finished initialisation");
+
     }
 
     void Graphics::Render()
     {
         int wW(0),wH(0);/*screenL(0),screenR(0),screenT(0),screenB(0);
          XPLMGetWindowGeometry(myWindow,&screenL,&screenT,&screenR,&screenB);*/
-
         int screenL, screenT, screenR, screenB;
         if (XPLMWindowIsInVR(myWindow)){
             /*
@@ -80,6 +81,19 @@ namespace ase
             1,   // No depth read, e.g. glDisable(GL_DEPTH_TEST);
             0);
         XPLMBindTexture2d(s_texture->m_textNum,0);
+        if (hasToUpdate){
+            glTexSubImage2D(GL_TEXTURE_2D,
+                        0,  // mipmap level
+                        0,  // x-offset
+                        0,  // y-offset
+                        s_texture->windowWidth,
+                        s_texture->windowHeight,
+                        GL_RGBA,           // color bytes of data we are sending
+                        GL_UNSIGNED_BYTE,  // encoding of data we are sending
+                        &s_texture->textureZone);
+            hasToUpdate=false;
+        }
+
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
@@ -92,6 +106,7 @@ namespace ase
 
     void Graphics::InitContext()
     {
+        //TODO: put a try/catch around the init
         glewInit();
 
         //shader sources
@@ -106,12 +121,12 @@ namespace ase
            "}\0";
 
         const char *fragmentShaderSource = "#version 330 core\n"
-           "out uvec4 FragColor;\n"
+           "out vec4 FragColor;\n"
            "in vec2 TexCoord;\n"
            "uniform usampler2D texture1;\n"
            "void main()\n"
            "{\n"
-           "   FragColor = uvec4(1);\n"
+           "   FragColor = texture(texture1, TexCoord);\n"
            "}\n\0";
 
         // vertex shader compile
@@ -134,12 +149,16 @@ namespace ase
         CheckCompileErrors(shaderProgram, "PROGRAM");
 
         // Make space
+        glDetachShader(shaderProgram, vertexShader);
+        glDetachShader(shaderProgram, fragmentShader);
+
         glDeleteShader(vertexShader);
         glDeleteShader(fragmentShader);
 
         //generate Vertex data
         float vertices[] = {
-                     1.0f,  1.0f, 1.0f, 1.0f,  // right top
+                     //1.0f,  1.0f, 1.0f, 1.0f,  // right top
+                     1.0f,  0.0f, 1.0f, 1.0f,  // right top
                      1.0f, -1.0f, 1.0f, 0.0f,  // right bottom
                     -1.0f, -1.0f, 0.0f, 0.0f,  // left bottom
                     -1.0f,  1.0f, 0.0f, 1.0f  // left top
@@ -184,18 +203,12 @@ namespace ase
         int success;
         char infoLog[1024];
         if (type != "PROGRAM")
-        {
             glGetShaderiv(shader, GL_COMPILE_STATUS, &success);
-        }
         else
-        {
             glGetProgramiv(shader, GL_LINK_STATUS, &success);
-        }
 
         if (success)
-        {
             Debug::Log("Graphics: Shader " + type + " compiled OK");
-        }
         else
         {
             Debug::Log("Graphics: Shader " + type + " compiled FAIL");
