@@ -25,14 +25,11 @@ namespace ase
     {
     friend Graphics;
     public:
-        Texture();
-        ~Texture();
-
-    private:
         void Init();
 
+    private:
+
         int m_textNum;
-        int m_fHasToUpdate;
         int windowWidth, windowHeight;
         std::array<textureColor, c_maxWWidth*c_maxWHeight> textureZone;
     };
@@ -53,6 +50,7 @@ namespace ase
         static void CheckCompileErrors(unsigned int shader, std::string type);
 
         static Texture* s_texture;
+        static bool m_fHasToUpdate;
         static XPLMWindowID myWindow;
         static unsigned int shaderProgram, VAO, VBO, EBO;
     };
