@@ -16,8 +16,8 @@ namespace ase
         unsigned char alpha;
     };
 
-    const int c_maxWWidth = 1400;
-    const int c_maxWHeight = 1200;
+    const int c_maxWWidth = 1024;
+    const int c_maxWHeight = 1024;
 
     class Graphics;
 
@@ -25,10 +25,14 @@ namespace ase
     {
     friend Graphics;
     public:
-        void Init();
+        Texture();
+        ~Texture();
 
     private:
+        void Init();
+
         int m_textNum;
+        int m_fHasToUpdate;
         int windowWidth, windowHeight;
         std::array<textureColor, c_maxWWidth*c_maxWHeight> textureZone;
     };
@@ -50,7 +54,6 @@ namespace ase
 
         static Texture* s_texture;
         static XPLMWindowID myWindow;
-        static bool hasToUpdate;
         static unsigned int shaderProgram, VAO, VBO, EBO;
     };
 }

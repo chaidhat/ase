@@ -13,8 +13,7 @@ namespace ase
     unsigned int Graphics::VBO = 0;
     unsigned int Graphics::EBO = 0;
 
-    Texture* Graphics::s_texture = new Texture();
-    bool Graphics::hasToUpdate = true;
+    Texture* Graphics::s_texture = nullptr;
 
     XPLMWindowID Graphics::myWindow = 0;
 
@@ -27,25 +26,43 @@ namespace ase
         return 1;
     }
 
+    Texture::Texture()
+    {
+        XPLMGenerateTextureNumbers(&m_textNum, 1);
+
+        XPLMBindTexture2d(m_textNum, 0);
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,windowWidth,windowHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &textureZone);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+
+    Texture::~Texture()
+    {
+        //TODO: check this for memory leaks
+        XPLMBindTexture2d(m_textNum, 0);
+        GLuint t = static_cast<GLuint>(m_textNum);
+        glDeleteTextures(1, &t);
+    }
+
     void Graphics::Init()
     {
         //TODO: add try/catch statement here too
-        textureColor colour;
-        colour.red = 255;
-        colour.green = 128;
-        colour.blue = 128;
-        colour.alpha = 128; 
-
-        //s_texture->textureZone.fill(colour);
-        for (auto &pixel : s_texture->textureZone){
-            pixel=colour;
-        }
-
         XPLMRegisterDrawCallback(DrawCallbackXp, xplm_Phase_Gauges, 0, NULL);
         Debug::Log("Graphics: Initialising context");
         InitContext();
         Debug::Log("Graphics: Initialising textures");
-        s_texture->Init();
+        s_texture = new Texture();
+
+        textureColor colour;
+        colour.red = 255;
+        colour.green = 128;
+        colour.blue = 128;
+        colour.alpha = 255; 
+        s_texture->textureZone.fill(colour);
+        s_texture->m_fHasToUpdate = true;
+
         Debug::Log("Graphics: Finished initialisation");
 
     }
@@ -81,17 +98,17 @@ namespace ase
             1,   // No depth read, e.g. glDisable(GL_DEPTH_TEST);
             0);
         XPLMBindTexture2d(s_texture->m_textNum,0);
-        if (hasToUpdate){
+        if (s_texture->m_fHasToUpdate){
             glTexSubImage2D(GL_TEXTURE_2D,
                         0,  // mipmap level
                         0,  // x-offset
                         0,  // y-offset
                         s_texture->windowWidth,
                         s_texture->windowHeight,
-                        GL_RGBA,           // color bytes of data we are sending
+                        GL_RGBA8,           // color bytes of data we are sending
                         GL_UNSIGNED_BYTE,  // encoding of data we are sending
                         &s_texture->textureZone);
-            hasToUpdate=false;
+            s_texture->m_fHasToUpdate=false;
         }
 
 
@@ -123,7 +140,7 @@ namespace ase
         const char *fragmentShaderSource = "#version 330 core\n"
            "out vec4 FragColor;\n"
            "in vec2 TexCoord;\n"
-           "uniform usampler2D texture1;\n"
+           "uniform sampler2D texture1;\n"
            "void main()\n"
            "{\n"
            "   FragColor = texture(texture1, TexCoord);\n"
@@ -193,8 +210,6 @@ namespace ase
         //hopefully this it not needed but don't want anybody to mess with my VAO
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindVertexArray(0);
-
-        //return true; //If things get more complex I'll check for errors and return as required
     }
     
     void Graphics::CheckCompileErrors(unsigned int shader, std::string type)
@@ -218,17 +233,5 @@ namespace ase
             Debug::Log("ERROR::SHADER_COMPILATION_ERROR of type: "+ilog); 
             //TODO: throw error
         }
-    }
-
-    void Texture::Init()
-    {
-        XPLMGenerateTextureNumbers(&m_textNum, 1);
-
-        XPLMBindTexture2d(m_textNum, 0);
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA,windowWidth,windowHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &textureZone); // EUREKA! it passes an address of textureZone, unlike the past attempts I passed the actual data.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 }

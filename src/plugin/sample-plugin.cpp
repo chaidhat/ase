@@ -35,8 +35,8 @@ public:
     {
         m_pDataRef = 20;
         int engN2 = m_pDataRef + 2;
-        ase::Debug::Log(m_pDataRef);
-        ase::Debug::Log(m_pDataRefSim);
+        //ase::Debug::Log(m_pDataRef);
+        //ase::Debug::Log(m_pDataRefSim);
     }
 
 private:
