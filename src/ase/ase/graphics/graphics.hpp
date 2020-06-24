@@ -8,12 +8,17 @@
 
 namespace ase
 {
+    typedef unsigned char color;
     struct textureColor
     {
-        unsigned char red;
-        unsigned char green;
-        unsigned char blue;
-        unsigned char alpha;
+        textureColor();
+        textureColor(color red, color green, color blue, color alpha);
+        ~textureColor();
+        
+        color red;
+        color green;
+        color blue;
+        color alpha;
     };
 
     const int c_maxWWidth = 1024;
@@ -23,13 +28,14 @@ namespace ase
 
     class Texture
     {
-    friend Graphics;
     public:
-        void Init();
+        Texture();
+        ~Texture();
 
-    private:
+        void Load(const unsigned char* image, const int imageSizeX, const int imageSizeY);
 
         int m_textNum;
+        bool m_fHasToUpdate;
         int windowWidth, windowHeight;
         std::array<textureColor, c_maxWWidth*c_maxWHeight> textureZone;
     };
@@ -50,7 +56,6 @@ namespace ase
         static void CheckCompileErrors(unsigned int shader, std::string type);
 
         static Texture* s_texture;
-        static bool m_fHasToUpdate;
         static XPLMWindowID myWindow;
         static unsigned int shaderProgram, VAO, VBO, EBO;
     };

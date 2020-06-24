@@ -6,6 +6,9 @@
 
 #include <glew.h>
 
+#include "ase/graphics/images/pollock"
+#include "ase/graphics/images/monet"
+
 namespace ase
 {
     // static variable intialisations
@@ -14,8 +17,7 @@ namespace ase
     unsigned int Graphics::VBO = 0;
     unsigned int Graphics::EBO = 0;
 
-    Texture* Graphics::s_texture = new Texture();
-    bool Graphics::m_fHasToUpdate = true;
+    Texture* Graphics::s_texture = nullptr;
 
     XPLMWindowID Graphics::myWindow = 0;
 
@@ -28,25 +30,74 @@ namespace ase
         return 1;
     }
 
+    textureColor::textureColor()
+    {
+    }
+
+    textureColor::textureColor(color red, color green, color blue, color alpha) :
+        red(red), green(green), blue(blue), alpha(alpha)
+    {
+    }
+
+    textureColor::~textureColor()
+    {
+    }
+
+    Texture::Texture()
+    {
+        XPLMGenerateTextureNumbers(&m_textNum, 1);
+
+        m_fHasToUpdate = false;
+        windowWidth = c_maxWWidth;
+        windowHeight = c_maxWHeight;
+
+        XPLMBindTexture2d(m_textNum, 0);
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,windowWidth,windowHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &textureZone); // EUREKA! it passes an address of textureZone, unlike the past attempts I passed the actual data.
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    }
+
+    Texture::~Texture()
+    {
+        //TODO: check this for memory leaks
+        XPLMBindTexture2d(m_textNum, 0);
+        GLuint t = static_cast<GLuint>(m_textNum);
+        glDeleteTextures(1, &t);
+    }
+
+    void Texture::Load(const unsigned char* image, const int imageSizeX, const int imageSizeY)
+    {
+        unsigned long i = 0; // pretty long variable
+        m_fHasToUpdate = true;
+
+        for (int x = 0; x < imageSizeX; x++)
+        {
+            for (int y = 0; y < imageSizeY; y++)
+            {
+                int pixNo = y + (c_maxWWidth * (imageSizeX - x));
+                textureZone[pixNo].blue = image[i++];
+                textureZone[pixNo].green = image[i++];
+                textureZone[pixNo].red = image[i++];
+                textureZone[pixNo].alpha = image[i++];
+            }
+        }
+    }
+
     void Graphics::Init()
     {
         //TODO: add try/catch statement here too
-        textureColor colour;
-        colour.red = 255;
-        colour.green = 128;
-        colour.blue = 128;
-        colour.alpha = 128; 
-
-        //s_texture->textureZone.fill(colour);
-        for (auto &pixel : s_texture->textureZone){
-            pixel=colour;
-        }
-
         XPLMRegisterDrawCallback(DrawCallbackXp, xplm_Phase_Gauges, 0, NULL);
         Debug::Log("Graphics: Initialising context");
         InitContext();
         Debug::Log("Graphics: Initialising textures");
-        s_texture->Init();
+        s_texture = new Texture();
+
+        textureColor colour(0xff, 0xff, 0xff, 0xff);
+        s_texture->textureZone.fill(colour);
+        Graphics::s_texture->Load(monet_map, 512, 512);
+
         Debug::Log("Graphics: Finished initialisation");
 
     }
@@ -82,7 +133,7 @@ namespace ase
             1,   // No depth read, e.g. glDisable(GL_DEPTH_TEST);
             0);
         XPLMBindTexture2d(s_texture->m_textNum,0);
-        if (m_fHasToUpdate){
+        if (s_texture->m_fHasToUpdate){
             glTexSubImage2D(GL_TEXTURE_2D,
                         0,  // mipmap level
                         0,  // x-offset
@@ -92,7 +143,7 @@ namespace ase
                         GL_RGBA,           // color bytes of data we are sending
                         GL_UNSIGNED_BYTE,  // encoding of data we are sending
                         &s_texture->textureZone);
-            m_fHasToUpdate=false;
+            s_texture->m_fHasToUpdate=false;
         }
 
 
@@ -157,12 +208,19 @@ namespace ase
         glDeleteShader(fragmentShader);
 
         //generate Vertex data
+        /*
         float vertices[] = {
-                     //1.0f,  1.0f, 1.0f, 1.0f,  // right top
-                     1.0f,  0.0f, 1.0f, 1.0f,  // right top
+                     1.0f,  1.0f, 1.0f, 1.0f,  // right top
                      1.0f, -1.0f, 1.0f, 0.0f,  // right bottom
                     -1.0f, -1.0f, 0.0f, 0.0f,  // left bottom
                     -1.0f,  1.0f, 0.0f, 1.0f  // left top
+        };
+        */
+        float vertices[] = {
+                     1.0f,  1.0f, 0.5f, 0.5f,  // right top
+                     1.0f, -1.0f, 0.5f, 0.0f,  // right bottom
+                    -1.0f, -1.0f, 0.0f, 0.0f,  // left bottom
+                    -1.0f,  1.0f, 0.0f, 0.5f  // left top
         };
         unsigned int indices[] = {
                       0, 1, 3,  // first Triangle
@@ -175,7 +233,7 @@ namespace ase
 
         glBindVertexArray(VAO);
 
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
+        glBindBuffer(GL_ARRAY_BUFFER, VBO); // layout location 1
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
@@ -219,20 +277,5 @@ namespace ase
             Debug::Log("ERROR::SHADER_COMPILATION_ERROR of type: "+ilog); 
             //TODO: throw error
         }
-    }
-
-    void Texture::Init()
-    {
-        XPLMGenerateTextureNumbers(&m_textNum, 1);
-
-        windowWidth = c_maxWWidth;
-        windowHeight = c_maxWHeight;
-
-        XPLMBindTexture2d(m_textNum, 0);
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,windowWidth,windowHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &textureZone); // EUREKA! it passes an address of textureZone, unlike the past attempts I passed the actual data.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 }
