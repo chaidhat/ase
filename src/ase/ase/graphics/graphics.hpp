@@ -24,8 +24,6 @@ namespace ase
     const int c_maxWWidth = 1024;
     const int c_maxWHeight = 1024;
 
-    class Graphics;
-
     class Texture
     {
     public:
@@ -33,11 +31,15 @@ namespace ase
         ~Texture();
 
         void Load(const unsigned char* image, const int imageSizeX, const int imageSizeY);
+        void Render();
 
+        std::array<textureColor, c_maxWWidth*c_maxWHeight> textureZone;
+    private:
         int m_textNum;
         bool m_fHasToUpdate;
         int windowWidth, windowHeight;
-        std::array<textureColor, c_maxWWidth*c_maxWHeight> textureZone;
+
+        void InitContext();
     };
 
     class Graphics

@@ -6,7 +6,7 @@
 
 #include <glew.h>
 
-#include "ase/graphics/images/pollock"
+//#include "ase/graphics/images/pollock"
 #include "ase/graphics/images/monet"
 
 namespace ase
@@ -45,18 +45,11 @@ namespace ase
 
     Texture::Texture()
     {
-        XPLMGenerateTextureNumbers(&m_textNum, 1);
-
         m_fHasToUpdate = false;
         windowWidth = c_maxWWidth;
         windowHeight = c_maxWHeight;
 
-        XPLMBindTexture2d(m_textNum, 0);
-        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,windowWidth,windowHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &textureZone); // EUREKA! it passes an address of textureZone, unlike the past attempts I passed the actual data.
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        InitContext();
     }
 
     Texture::~Texture()
@@ -65,6 +58,18 @@ namespace ase
         XPLMBindTexture2d(m_textNum, 0);
         GLuint t = static_cast<GLuint>(m_textNum);
         glDeleteTextures(1, &t);
+    }
+
+    void Texture::InitContext()
+    {
+        XPLMGenerateTextureNumbers(&m_textNum, 1);
+        XPLMBindTexture2d(m_textNum, 0);
+
+        glTexImage2D(GL_TEXTURE_2D,0,GL_RGBA8,windowWidth,windowHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &textureZone);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     }
 
     void Texture::Load(const unsigned char* image, const int imageSizeX, const int imageSizeY)
@@ -82,6 +87,23 @@ namespace ase
                 textureZone[pixNo].red = image[i++];
                 textureZone[pixNo].alpha = image[i++];
             }
+        }
+    }
+
+    void Texture::Render()
+    {
+        XPLMBindTexture2d(m_textNum,0);
+        if (m_fHasToUpdate){
+            glTexSubImage2D(GL_TEXTURE_2D,
+                        0,  // mipmap level
+                        0,  // x-offset
+                        0,  // y-offset
+                        windowWidth,
+                        windowHeight,
+                        GL_RGBA,           // color bytes of data we are sending
+                        GL_UNSIGNED_BYTE,  // encoding of data we are sending
+                        &textureZone);
+            m_fHasToUpdate=false;
         }
     }
 
@@ -132,20 +154,7 @@ namespace ase
             1,   // Use alpha blending, e.g. glEnable(GL_BLEND);
             1,   // No depth read, e.g. glDisable(GL_DEPTH_TEST);
             0);
-        XPLMBindTexture2d(s_texture->m_textNum,0);
-        if (s_texture->m_fHasToUpdate){
-            glTexSubImage2D(GL_TEXTURE_2D,
-                        0,  // mipmap level
-                        0,  // x-offset
-                        0,  // y-offset
-                        s_texture->windowWidth,
-                        s_texture->windowHeight,
-                        GL_RGBA,           // color bytes of data we are sending
-                        GL_UNSIGNED_BYTE,  // encoding of data we are sending
-                        &s_texture->textureZone);
-            s_texture->m_fHasToUpdate=false;
-        }
-
+        s_texture->Render();
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);
@@ -208,14 +217,9 @@ namespace ase
         glDeleteShader(fragmentShader);
 
         //generate Vertex data
-        /*
-        float vertices[] = {
-                     1.0f,  1.0f, 1.0f, 1.0f,  // right top
-                     1.0f, -1.0f, 1.0f, 0.0f,  // right bottom
-                    -1.0f, -1.0f, 0.0f, 0.0f,  // left bottom
-                    -1.0f,  1.0f, 0.0f, 1.0f  // left top
-        };
-        */
+        // the first two numbers are x,y
+        // the last two are texture UVs UVx, UVy
+        // so x,y,UVx,UVy
         float vertices[] = {
                      1.0f,  1.0f, 0.5f, 0.5f,  // right top
                      1.0f, -1.0f, 0.5f, 0.0f,  // right bottom
