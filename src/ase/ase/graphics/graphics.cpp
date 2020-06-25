@@ -16,6 +16,7 @@ namespace ase
     unsigned int Graphics::VAO = 0;
     unsigned int Graphics::VBO = 0;
     unsigned int Graphics::EBO = 0;
+    //float frame = 0;
 
     Texture* Graphics::s_texture = nullptr;
 
@@ -155,6 +156,22 @@ namespace ase
             1,   // No depth read, e.g. glDisable(GL_DEPTH_TEST);
             0);
         s_texture->Render();
+
+        // manipulate data
+        /*
+        frame += 0.05;
+        if (frame > 1)
+            frame = 0;
+        float vertices[] = {
+                     1.0f,  frame, 0.5f, 0.5f,  // right top
+                     1.0f, -1.0f, 0.5f, 0.0f,  // right bottom
+                    -1.0f, -1.0f, 0.0f, 0.0f,  // left bottom
+                    -1.0f,  1.0f, 0.0f, 0.5f  // left top
+        };
+
+        glBindBuffer(GL_ARRAY_BUFFER, VBO); // layout location 1
+        glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+        */
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);

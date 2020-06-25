@@ -54,7 +54,6 @@ namespace ase
 
     private:
         static void InitContext();
-
         static void CheckCompileErrors(unsigned int shader, std::string type);
 
         static Texture* s_texture;

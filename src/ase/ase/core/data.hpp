@@ -76,6 +76,7 @@ namespace ase
 
         ~DataRef()
         {
+            ase::Debug::Log("Data: Destroying dataref " + m_dataPath);
             delete m_pData;
         }
 
@@ -201,7 +202,6 @@ namespace ase
             DataRef<T>* pDataRef = new DataRef<T>(dataRef, pDataLocation, readMode, readSpeed);
             m_data.push_back((DataInterface*)pDataRef);
             EventManager::RegisterEvent((EventInterface*)pDataRef);
-
             return pDataRef->GetRef();
         }
 
