@@ -1,5 +1,5 @@
 # Aircraft Simulation Engine
-### This is a private repository. Source code is protected.
+### This is a private repository. © 2020 Chaidhat Chaimongkol
 Platform: X-Plane 11.50\
 Dependencies: XPLM 302 SDK, OpenGL32, GLEW32\
 Start Date: 26-05-2020\

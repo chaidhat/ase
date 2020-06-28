@@ -1,4 +1,3 @@
-
 #include "asepch.hpp"
 #include "ase/graphics/graphics.hpp"
 
@@ -16,7 +15,7 @@ namespace ase
     unsigned int Graphics::VAO = 0;
     unsigned int Graphics::VBO = 0;
     unsigned int Graphics::EBO = 0;
-    //float frame = 0;
+    float frame = 0;
 
     Texture* Graphics::s_texture = nullptr;
 
@@ -158,7 +157,6 @@ namespace ase
         s_texture->Render();
 
         // manipulate data
-        /*
         frame += 0.05;
         if (frame > 1)
             frame = 0;
@@ -171,7 +169,6 @@ namespace ase
 
         glBindBuffer(GL_ARRAY_BUFFER, VBO); // layout location 1
         glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-        */
 
         glUseProgram(shaderProgram);
         glBindVertexArray(VAO);

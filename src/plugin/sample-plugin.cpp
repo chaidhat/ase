@@ -19,8 +19,8 @@ public:
 
     void Start()
     {
-        ase::Debug::Log("Hello World!");
-        DemoIo();
+        ase::Debug::Log("Open the pod bay doors, Haal.");
+        //DemoIo();
 
     }
 
@@ -42,7 +42,7 @@ public:
 private:
     // register all flightdata
     int& m_pDataRef = ase::DataManager::RegisterDataRef<int>("777/path/dataRef");
-    //
+    
     // register all lazy flightdata (get/set once per second)
     int& m_pDataRefB = ase::DataManager::RegisterDataRef<int>("777/path/dataRef", ase::RS_LAZY);
 

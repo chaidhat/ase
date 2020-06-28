@@ -76,7 +76,7 @@ namespace ase
 
         ~DataRef()
         {
-            ase::Debug::Log("Data: Destroying dataref " + m_dataPath);
+            //ase::Debug::Log("Data: Removing dataref " + m_dataPath);
             delete m_pData;
         }
 
