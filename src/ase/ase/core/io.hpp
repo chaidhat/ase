@@ -1,6 +1,7 @@
 #pragma once
-
 #include <fstream> // for file io
+
+#include "ase/debug/log.hpp"
 
 namespace ase
 {
@@ -10,6 +11,12 @@ namespace ase
         IoException(const std::string& msg):
             runtime_error(msg)
         {}
+    };
+
+    enum WriteMode
+    {
+        WM_LNBRK, // line break (default)
+        WM_CONT, // continuous, no line breaks
     };
 
     class File
@@ -32,10 +39,9 @@ namespace ase
         std::string GetExt();
         void SetExt(std::string fillext);
 
-
         std::string Read();
-        void Write(std::string inputStr);
-        void Write(std::string inputStr, bool fEndLine);
+        void Write(const std::string& inputStr, WriteMode mode = WM_LNBRK);
+
     private:
         void Init();
         void Stop();

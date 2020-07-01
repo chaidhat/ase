@@ -94,7 +94,7 @@ namespace ase
     std::string File::GetPath() { return m_path; }
     void File::SetPath(std::string filepath)
     {
-        if (!m_fInitialised)
+        if (m_fInitialised)
             Stop();
         m_path = filepath;
     }
@@ -102,7 +102,7 @@ namespace ase
     std::string File::GetName() { return m_name; }
     void File::SetName(std::string filename)
     {
-        if (!m_fInitialised)
+        if (m_fInitialised)
             Stop();
         m_name = filename;
     }
@@ -110,13 +110,14 @@ namespace ase
     std::string File::GetExt() { return m_ext; }
     void File::SetExt(std::string fileext)
     {
-        if (!m_fInitialised)
+        if (m_fInitialised)
             Stop();
         m_ext = fileext;
     }
 
     std::string File::Read()
     {
+        Debug::Log("Io: Reading from " + GetFullDir() + ".");
         if (!m_fInitialised)
             Init();
 
@@ -124,35 +125,54 @@ namespace ase
         {
             std::string outputStr;
             getline(m_fileIn, outputStr);
+            Stop();
             return outputStr;
         }
-        return NULL; // if file is not good
+        else
+        {
+            Debug::Log("BAD.");
+            throw IoException("BAD file " + GetFullDir() + ".");
+            return NULL; // if file is not good
+        }
     }
 
-    void File::Write(std::string inputStr)
+    void File::Write(const std::string& inputStr, WriteMode mode /*= WM_LNBRK*/)
     {
-        Write(inputStr, true);
-    }
-
-    void File::Write(std::string inputStr, bool fEndLine)
-    {
+        Debug::Log("Io: Writing to " + GetFullDir() + ".");
         if (!m_fInitialised)
             Init();
 
         if (m_fileIn.good())
         {
-            if (fEndLine)
-                m_fileOut << inputStr << std::endl;
-            else
-                m_fileOut << inputStr;
+            switch (mode)
+            {
+                case WM_LNBRK:
+                    m_fileOut << inputStr << std::endl;
+                    break;
+                case WM_CONT:
+                    m_fileOut << inputStr;
+                    break;
+            }
+        }
+        else
+        {
+            Debug::Log("BAD.");
+            throw IoException("BAD file " + GetFullDir() + ".");
         }
     }
 
     void File::Init()
     {
-        m_fileOut = std::ofstream(GetFullDir().c_str());
-        m_fileIn = std::ifstream(GetFullDir().c_str());
-        m_fInitialised = true;
+        try 
+        {
+            m_fileOut = std::ofstream(GetFullDir().c_str());
+            m_fileIn = std::ifstream(GetFullDir().c_str());
+            m_fInitialised = true;
+        }
+        catch (...)
+        {
+            throw IoException("Erroring opening file " + GetFullDir() + ".");
+        }
     }
 
     void File::Stop()

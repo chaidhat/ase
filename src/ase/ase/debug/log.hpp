@@ -13,6 +13,6 @@ namespace ase
         static void Log(const std::string message);
         static void Log(const int message);
         
-        static File* s_logFile;
+        //static File* s_logFile;
     };
 }

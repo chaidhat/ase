@@ -4,7 +4,7 @@
 namespace ase
 {
     // static variable initalisations
-    File* Debug::s_logFile = nullptr;
+    //File* Debug::s_logFile = nullptr;
 
     /*void Debug::InitLog()
     {

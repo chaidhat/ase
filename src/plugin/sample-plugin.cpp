@@ -58,6 +58,7 @@ private:
     // demonstration of input/output
     void DemoIo()
     {
+        ase::Debug::Log("Haal, commence the File IO please.");
         // init file
         ase::File myFile("path1/path2/file.txt");
 
@@ -75,16 +76,17 @@ private:
 
         // read a line from file
         std::string in = myFile.Read();
+        ase::Debug::Log(in);
 
         // write a line to file
-        std::string out = "apples";
+        std::string out = "daisy";
         myFile.Write(out);
 
         // write a string to file (without line break)
-        myFile.Write(out, false);
+        myFile.Write(out, ase::WM_CONT);
 
         // set log output file to myFile
-        ase::Debug::s_logFile = &myFile;
+        //ase::Debug::s_logFile = &myFile;
     }
 };
 
