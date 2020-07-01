@@ -76,13 +76,13 @@ namespace ase
 
         ~DataRef()
         {
-            //ase::Debug::Log("Data: Removing dataref " + m_dataPath);
+            Debug::Log("Data: Removing dataref " + m_dataPath);
             delete m_pData;
         }
 
         void Start()
         {
-            ase::Debug::Log("Data: Creating dataref " + m_dataPath);
+            Debug::Log("Data: Creating dataref " + m_dataPath);
             m_dataRef = XPLMFindDataRef(m_dataPath.c_str());
 
             // check existence of dataref

@@ -71,7 +71,7 @@ private:
         // get parts of filedir
         std::string myPath = myFile.GetPath(); // returns path1
 
-        // get parts of the filedir (bool fPath, bool fName, bool fE      xt)
+        // get parts of the filedir (bool fPath, bool fName, bool fExt)
         std::string myFilename = myFile.GetDir(false, true, true); // newfile.txt
 
         // read a line from file

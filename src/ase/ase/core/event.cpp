@@ -7,14 +7,14 @@ namespace ase
     {
         void RegisterEvent(EventInterface* pEvent)
         {
-            ase::Debug::Log("Events: Registering event");
+            Debug::Log("Events: Registering event");
             s_events.push_back(pEvent);
         }
 
         void DeregisterEvent(EventInterface* pInpEvent)
         {
             // consider using std::iterators
-            //ase::Debug::Log("Events: Deregistering event");
+            Debug::Log("Events: Deregistering event");
             for (EventInterface* pEvent : s_events)
             {
                 if (pEvent == pInpEvent)

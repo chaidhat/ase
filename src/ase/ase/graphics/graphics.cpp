@@ -119,9 +119,6 @@ namespace ase
         textureColor colour(0xff, 0xff, 0xff, 0xff);
         s_texture->textureZone.fill(colour);
         Graphics::s_texture->Load(monet_map, 512, 512);
-
-        Debug::Log("Graphics: Finished initialisation");
-
     }
 
     void Graphics::Render()

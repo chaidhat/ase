@@ -159,6 +159,7 @@ namespace ase
             Debug::Log("BAD.");
             throw IoException("BAD file " + GetFullDir() + ".");
         }
+        Stop();
     }
 
     void File::Init()
