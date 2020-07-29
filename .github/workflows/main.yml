@@ -31,3 +31,11 @@ jobs:
       run: |
         echo Add other actions to build,
         echo test, and deploy your project.
+        touch a.txt
+        echo "We are GO." > a.txt
+        
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v2
+      with:
+        name: product
+        path: a.txt
