@@ -1,5 +1,6 @@
 # Aircraft Simulation Engine
 ### This is a private repository. © 2020 Chaidhat Chaimongkol
+![Cross-Build](https://github.com/Chai112/ase/workflows/Cross-Build/badge.svg)\
 Platform: X-Plane 11.50\
 Dependencies: XPLM 302 SDK, OpenGL32, GLEW32\
 Start Date: 26-05-2020\
