@@ -13,9 +13,31 @@ on:
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
-  build:
+  build-windows:
     # The type of runner that the job will run on
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v2
+    - name: Compile for Windows
+      run: |
+        echo|set /p="#include <stdio.h>" > a.c
+        echo. >> a.c
+        echo|set /p="int main () { printf("testing\n"); return 0; }" >> a.c
+        type a.c
+        gcc a.c -o b.exe
+        b.exe
+        
+    - name: Upload binaries
+      uses: actions/upload-artifact@v2
+      with:
+        name: product-windows
+        path: b.exe
+    
+  # This workflow contains a single job called "build"
+  build-macos:
+    # The type of runner that the job will run on
+    runs-on: macos-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -27,15 +49,19 @@ jobs:
       run: echo Hello, world!
 
     # Runs a set of commands using the runners shell
+    # Test compilation capabilites of the system
     - name: Run a multi-line script
       run: |
         echo Add other actions to build,
         echo test, and deploy your project.
-        touch a.txt
-        echo "We are GO." > a.txt
+        touch a.c
+        echo "#include<stdio.h>" > a.c
+        echo "int main() { printf(\"testing\n\"); return 0; }" >> a.c
+        gcc a.c -o b.exe
+        ./b.exe
         
     - name: Archive production artifacts
       uses: actions/upload-artifact@v2
       with:
-        name: product
-        path: a.txt
+        name: product-macos
+        path: b.exe
