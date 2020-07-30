@@ -30,7 +30,7 @@ jobs:
     - name: Upload binaries
       uses: actions/upload-artifact@v2
       with:
-        name: ase-product
+        name: product
         path: bin/win.xpl
 
   build-macos:
@@ -54,7 +54,7 @@ jobs:
     - name: Upload binaries
       uses: actions/upload-artifact@v2
       with:
-        name: ase-product
+        name: product
         path: bin/win.xpl
         
   # Pacakge the builds
@@ -69,17 +69,17 @@ jobs:
 
     - uses: actions/download-artifact@v2
       with:
-        name: ase-product
+        name: product
         path: product
         
     # Zip the package
     - name: Zip package
-      run: zip -r ase-product.zip ase-product
+      run: zip -r product.zip product
 
     # Upload the finished binaries
     - name: Upload package
       uses: actions/upload-artifact@v2
       with:
         name: ase-product
-        path: ase-product.zip
+        path: product.zip
 
