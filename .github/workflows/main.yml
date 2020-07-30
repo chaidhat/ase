@@ -1,6 +1,6 @@
 # This is a basic workflow to help you get started with Actions
 
-name: Cross-Build
+name: build
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
@@ -12,29 +12,27 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
+
   build-windows:
     # The type of runner that the job will run on
     runs-on: windows-latest
     
+    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
+    # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
-    - name: Compile for Windows
-      run: |
-        echo|set /p="#include <stdio.h>" > a.c
-        echo. >> a.c
-        echo|set /p="int main () { printf("testing\n"); return 0; }" >> a.c
-        type a.c
-        gcc a.c -o b.exe
-        b.exe
+
+    # Run Make to compile and link
+    - name: Make
+      run: make
         
+    # Upload the finished binaries
     - name: Upload binaries
       uses: actions/upload-artifact@v2
       with:
-        name: product-windows
-        path: b.exe
-    
-  # This workflow contains a single job called "build"
+        name: ase-product
+        path: bin/win.xpl
+
   build-macos:
     # The type of runner that the job will run on
     runs-on: macos-latest
@@ -44,24 +42,43 @@ jobs:
     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
     - uses: actions/checkout@v2
 
-    # Runs a single command using the runners shell
-    - name: Run a one-line script
-      run: echo Hello, world!
-
-    # Runs a set of commands using the runners shell
-    # Test compilation capabilites of the system
-    - name: Run a multi-line script
-      run: |
-        echo Add other actions to build,
-        echo test, and deploy your project.
-        touch a.c
-        echo "#include<stdio.h>" > a.c
-        echo "int main() { printf(\"testing\n\"); return 0; }" >> a.c
-        gcc a.c -o b.exe
-        ./b.exe
+    # Run Make to compile and link
+    - name: Make
+      run: make
+    
+    # Rename the name for macos
+    - name: Rename
+      run: mv bin/win.xpl bin/mac.xpl
         
-    - name: Archive production artifacts
+    # Upload the finished binaries
+    - name: Upload binaries
       uses: actions/upload-artifact@v2
       with:
-        name: product-macos
-        path: b.exe
+        name: ase-product
+        path: bin/mac.xpl
+        
+  # Pacakge the builds
+  package:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: actions/download-artifact@v2
+      with:
+        name: ase-product
+        path: product
+        
+    # Zip the package
+    - name: Zip package
+      run: zip -r ase-product.zip ase-product
+
+    # Upload the finished binaries
+    - name: Upload package
+      uses: actions/upload-artifact@v2
+      with:
+        name: ase-product
+        path: ase-product.zip
+
