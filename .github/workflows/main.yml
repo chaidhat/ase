@@ -43,19 +43,19 @@ jobs:
     - uses: actions/checkout@v2
 
     # Run Make to compile and link
-    - name: Make
-      run: make
+    #- name: Make
+    #  run: make
     
     # Rename the name for macos
-    - name: Rename
-      run: mv bin/win.xpl bin/mac.xpl
+    #- name: Rename
+    #  run: mv bin/win.xpl bin/mac.xpl
         
     # Upload the finished binaries
     - name: Upload binaries
       uses: actions/upload-artifact@v2
       with:
         name: ase-product
-        path: bin/mac.xpl
+        path: bin/win.xpl
         
   # Pacakge the builds
   package:
