@@ -1,5 +1,5 @@
 # Aircraft Simulation Engine
-### Now licensed under GPL 3.0
+### Now licensed under MIT
 ![Cross-Build](https://github.com/Chai112/ase/workflows/Cross-Build/badge.svg?event=push)\
 Platform: X-Plane 11.50\
 Dependencies: XPLM 302 SDK, OpenGL32, GLEW32\
